@@ -15,7 +15,7 @@ import helper from "./HelperFunctions";
 // let bosh = new PitchClassInterval(7, 8);
 // console.log(bosh.getOrderedPitchClassInterval());
 
-function createIntervalClassVector(noteList: Array<number>){
+export function createIntervalClassVector(noteList: Array<number>){
   let vector = {
     1: 0,
     2: 0,
