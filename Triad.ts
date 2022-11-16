@@ -1,8 +1,8 @@
 import Chord from "./Chord";
 
 class Triad extends Chord {
-  third: Number;
-  fifth: Number;
+  third: number;
+  fifth: number;
 
   constructor(){
     super();

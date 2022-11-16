@@ -18,7 +18,7 @@ function midiNoteToNoteName(){
   return noteObj;
 }
 
-function getMidiNoteOctave(i: Number): Number{
+function getMidiNoteOctave(i: number): number{
   if (i < 24){
     return 0;
   } else if (i < 36){
