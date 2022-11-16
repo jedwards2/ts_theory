@@ -1,7 +1,7 @@
 import Triad from "./Triad";
 import PitchClassInterval from "./PitchClassInterval";
 import maps from "./MidiMap";
-import helper from "./HelperFunctions";
+import HelperFunctions from "./HelperFunctions";
 
 // let triad = new Triad();
 // triad.print();
@@ -32,9 +32,12 @@ export function createIntervalClassVector(noteList: number[]){
   for (let i = 0; i<noteList.length - 1; i++){
     for (let q = i+1; q < noteList.length; q++){
       let interval = new PitchClassInterval(noteList[i], noteList[q]);
-      vector[interval.getOrderedPitchClassInterval()] += 1;
+      vector[HelperFunctions.convertToClassVectorSpecs(interval.getOrderedPitchClassInterval())] += 1;
     }
   }
 
   return vector;
 }
+
+
+console.log(createIntervalClassVector([0, 1, 9]));

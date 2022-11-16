@@ -34,7 +34,24 @@ function convertNameToPitchClass(name: String){
   }
 }
 
+function convertToClassVectorSpecs(note: number){
+  if (note === 11){
+    return 1;
+  } else if (note === 10){
+    return 2;
+  } else if (note === 9){
+    return 3;
+  } else if (note === 8){
+    return 4;
+  } else if (note === 7){
+    return 3;
+  } else {
+    return note;
+  }
+}
+
 export default {
   normalizePitchClass,
   convertNameToPitchClass,
+  convertToClassVectorSpecs,
 }
