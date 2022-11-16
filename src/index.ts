@@ -15,7 +15,8 @@ import helper from "./HelperFunctions";
 // let bosh = new PitchClassInterval(7, 8);
 // console.log(bosh.getOrderedPitchClassInterval());
 
-export function createIntervalClassVector(noteList: Array<number>){
+export function createIntervalClassVector(noteList: number[]){
+  noteList = noteList.filter((note, index) => noteList.indexOf(note) === index);
   let vector = {
     1: 0,
     2: 0,
@@ -24,6 +25,9 @@ export function createIntervalClassVector(noteList: Array<number>){
     5: 0,
     6: 0,
   };
+  if (noteList.length < 2){
+    return "not a valid note list";
+  }
 
   for (let i = 0; i<noteList.length - 1; i++){
     for (let q = i+1; q < noteList.length; q++){
@@ -34,5 +38,3 @@ export function createIntervalClassVector(noteList: Array<number>){
 
   return vector;
 }
-
-console.log(createIntervalClassVector([7, 8, 11]));
