@@ -2,6 +2,7 @@ import Triad from "./Triad";
 import PitchClassInterval from "./PitchClassInterval";
 import maps from "./MidiMap";
 import HelperFunctions from "./HelperFunctions";
+import NoteSet from "./NoteSet";
 
 // let triad = new Triad();
 // triad.print();
@@ -15,5 +16,5 @@ import HelperFunctions from "./HelperFunctions";
 // let bosh = new PitchClassInterval(7, 8);
 // console.log(bosh.getOrderedPitchClassInterval());
 
-console.log(HelperFunctions.getNormalForm([0, 4, 8, 9, 11]))
-console.log(HelperFunctions.getNormalForm([9, 1, 5]))
+console.log(NoteSet.getNormalForm(new NoteSet([0, 4, 8, 9, 11])))
+console.log(NoteSet.getNormalForm(new NoteSet([9, 1, 5])))
