@@ -1,43 +1,27 @@
-import Triad from "./Triad";
 import PitchClassInterval from "./PitchClassInterval";
 import maps from "./MidiMap";
 import HelperFunctions from "./HelperFunctions";
+import NoteSet from "./NoteSet";
 
-// let triad = new Triad();
-// triad.print();
+let map = maps.pianoKeyToNoteName();
+let map2 = maps.midiNoteToNoteName();
 
-// let map = maps.pianoKeyToNoteName();
-// let map2 = maps.midiNoteToNoteName();
+// console.log(HelperFunctions.normalizePitchClass(25));
+// console.log(HelperFunctions.convertNameToPitchClass("C#"));
 
-// console.log(helper.normalizePitchClass(25));
-// console.log(helper.convertNameToPitchClass("C#"));
-
-// let bosh = new PitchClassInterval(7, 8);
+let bosh = new PitchClassInterval(7, 8);
 // console.log(bosh.getOrderedPitchClassInterval());
 
-export function createIntervalClassVector(noteList: number[]){
-  noteList = noteList.filter((note, index) => noteList.indexOf(note) === index);
-  let vector = {
-    1: 0,
-    2: 0,
-    3: 0,
-    4: 0,
-    5: 0,
-    6: 0,
-  };
-  if (noteList.length < 2){
-    return "not a valid note list";
-  }
+// console.log(NoteSet.getNormalForm(new NoteSet([0, 4, 8, 9, 11])))
+// console.log(NoteSet.getNormalForm(new NoteSet([9, 1, 5])))
 
-  for (let i = 0; i<noteList.length - 1; i++){
-    for (let q = i+1; q < noteList.length; q++){
-      let interval = new PitchClassInterval(noteList[i], noteList[q]);
-      vector[HelperFunctions.convertToClassVectorSpecs(interval.getOrderedPitchClassInterval())] += 1;
-    }
-  }
+// NoteSet.transposeSet(new NoteSet([1, 2, 3]), 2)
 
-  return vector;
-}
+// console.log(NoteSet.normalizeSet(new NoteSet([11, 12, 13])))
 
-
-console.log(createIntervalClassVector([0, 1, 9]));
+// console.log(HelperFunctions.createIntervalClassVector(new NoteSet([3, 3, 3])))
+// console.log(NoteSet.transposeSet(new NoteSet ([23, 25, 27]), 13))
+// console.log(NoteSet.checkIfTransposition(new NoteSet([10, 11, 1, 2]), new NoteSet([7, 8, 10, 11])))
+// console.log(NoteSet.checkIfTransposition(new NoteSet([10, 11, 1, 2]), new NoteSet([7, 8, 10, 10])))
+// console.log(NoteSet.invertSet(new NoteSet([1, 3, 4, 7]), 5));
+console.log(NoteSet.getNormalForm(new NoteSet([4, 2, 1, 10])))
