@@ -7,11 +7,18 @@ class NoteSet {
     this.set = inputted_notes;
   }
 
-  static normalizeSet(input_set: NoteSet){
-    return input_set.set.map(num => HelperFunctions.normalizePitchClass(num));
+  static transposeSet(input_set: NoteSet, distance: number){
+    input_set.set = input_set.set.map(note => note += distance);
+    return NoteSet.normalizeSet(input_set);
   }
 
-  static getNormalForm(input_set: NoteSet){
+  static normalizeSet(input_set: NoteSet): NoteSet{
+    return new NoteSet(input_set.set.map(num => HelperFunctions.normalizePitchClass(num)));
+  }
+
+  static getNormalForm(input_set: NoteSet): NoteSet {
+    //remove all duplicates
+    input_set.set = input_set.set.filter((note, index) => input_set.set.indexOf(note) === index);
     //make sure that the noteSet array is increasing by adding 12 if necessary
     for (let i = 0; i < input_set.set.length - 1; i++){
       if (input_set.set[i] > input_set.set[i + 1]){
@@ -26,6 +33,7 @@ class NoteSet {
       input_set.set.push(firstElement + 12);
       orderings.push(input_set.set);
     }
+
     //lengths array holds each the distance of each permutation
     let lengths = [];
     for (let i = 0; i<orderings.length; i++){
@@ -60,21 +68,23 @@ class NoteSet {
       }
 
       //normalize each array before final step
-      arraysWithSameLength = arraysWithSameLength.map(array => NoteSet.normalizeSet(new NoteSet(array)))
+      arraysWithSameLength = arraysWithSameLength.map(array => NoteSet.normalizeSet(new NoteSet(array)));
 
       //finally, iterate over each array until one of the notes is lower
       for (let i = 0; i < arraysWithSameLength.length; i++){
         let pitch_classes = [];
+
         //push note into pitch_classes array, one at a time for comparison
-        for (let q = 0; q < arraysWithSameLength[i].length; q++){
-          pitch_classes.push(arraysWithSameLength[i][q]);
+        for (let q = 0; q < arraysWithSameLength[i].set.length; q++){
+          pitch_classes.push(arraysWithSameLength[i].set[q]);
         }
+
         //if the two notes are different, find and return the lower array
         let duplicates = (new Set(pitch_classes)).size !== pitch_classes.length;
         if (!duplicates){
           let min = Math.min(...pitch_classes);
           let index = pitch_classes.indexOf(min);
-          return NoteSet.normalizeSet(new NoteSet(arraysWithSameLength[index]));
+          return NoteSet.normalizeSet(new NoteSet(arraysWithSameLength[index].set));
         }
       }
 

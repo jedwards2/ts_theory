@@ -1,9 +1,9 @@
 import PitchClassInterval from "./PitchClassInterval";
+import NoteSet from "./NoteSet";
 import { Note } from "./types";
 import { IntervalClassVector } from "./types";
-import NoteSet from "./NoteSet";
 
-function normalizePitchClass(note: Note) {
+function normalizePitchClass(note: Note): Note {
   //converts all notes to 0 - 11
   while (note < 0){
     note += 12;
@@ -79,7 +79,7 @@ function createIntervalClassVector(noteList: NoteSet): IntervalClassVector | Err
   for (let i = 0; i<noteList.set.length - 1; i++){
     for (let q = i+1; q < noteList.set.length; q++){
       //create a new PitchClassInterval obj
-      let interval = new PitchClassInterval(noteList[i], noteList[q]);
+      let interval = new PitchClassInterval(noteList.set[i], noteList.set[q]);
       // converts to 0-6 if larger and then adds one to that class on the vector
       let intervalClass = convertToClassVectorSpecs(interval.getOrderedPitchClassInterval());
       vector[intervalClass] += 1;
