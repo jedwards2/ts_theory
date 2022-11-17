@@ -7,6 +7,38 @@ class NoteSet {
     this.set = inputted_notes;
   }
 
+  static getPrimeForm(input_set: NoteSet){
+    let set_1 = new NoteSet(input_set.set)
+    set_1 = NoteSet.getNormalForm(set_1);
+    set_1 = NoteSet.transposeSetTo0(set_1);
+
+    let invertedSet = new NoteSet(input_set.set);
+    invertedSet = NoteSet.invertSet(invertedSet);
+    invertedSet = NoteSet.getNormalForm(invertedSet);
+    invertedSet = NoteSet.transposeSetTo0(invertedSet);
+
+
+    //starting from the second to last item, compare each to the first item, looping over the array backwards
+    for (let i = set_1.set.length - 2; i > 0; i--){
+      //comparison array holds the distances between these items
+      let comparisonArray = [];
+      comparisonArray.push(input_set.set[i] - input_set.set[0]);
+      comparisonArray.push(invertedSet.set[i] - invertedSet.set[0]);
+      //if there are no duplicates in the comparison array, return the array with the lower distance
+      let duplicates = (new Set(comparisonArray)).size !== comparisonArray.length;
+      if (!duplicates){
+        let min = Math.min(...comparisonArray);
+        let index = comparisonArray.indexOf(min);
+
+        if (index === 0){
+          return NoteSet.normalizeSet(set_1);
+        } else {
+          return NoteSet.normalizeSet(invertedSet);
+        }
+      }
+    }
+  }
+
   static checkIfTransposition(input_set1: NoteSet, input_set2: NoteSet){
     let transposition_array = new NoteSet([])
     for (let i = 0; i < input_set1.set.length; i++){
@@ -27,6 +59,12 @@ class NoteSet {
   static transposeSet(input_set: NoteSet, distance: number){
     input_set.set = input_set.set.map(note => note += distance);
     return NoteSet.normalizeSet(input_set);
+  }
+
+  static transposeSetTo0(input_set: NoteSet){
+    let amount = input_set.set[0];
+    input_set.set = input_set.set.map(num => num - amount);
+    return input_set;
   }
 
   static normalizeSet(input_set: NoteSet): NoteSet{
@@ -57,14 +95,12 @@ class NoteSet {
       orderings.push(input_set.set);
     }
 
-    console.log(orderings);
-
     //lengths array holds each the distance of each permutation
     let lengths = [];
     for (let i = 0; i<orderings.length; i++){
       lengths.push(orderings[i][orderings[i].length - 1] - orderings[i][0])
     }
-    console.log(lengths)
+
     //if there are duplicates in the array, move on to step 2 for closer inspection
     let duplicates = (new Set(lengths)).size !== lengths.length;
     if (duplicates){
