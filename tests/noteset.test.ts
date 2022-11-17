@@ -53,3 +53,16 @@ describe('testing normalForm noteset', () => {
     expect(NoteSet.getNormalForm(new NoteSet([9, 1, 5]))).toStrictEqual(new NoteSet([1, 5, 9]));
   })
 });
+
+describe('testing checkIfTranposition noteset', () => {
+  test('can recognize transposed sets', () => {
+    expect(NoteSet.checkIfTransposition(new NoteSet([10, 11, 1, 2]), new NoteSet([7, 8, 10, 11]))).toStrictEqual(true);
+  })
+});
+
+
+describe('testing checkIfTranposition noteset', () => {
+  test('can recognize not transposed sets', () => {
+    expect(NoteSet.checkIfTransposition(new NoteSet([10, 11, 1, 2]), new NoteSet([7, 8, 10, 10]))).toStrictEqual(false);
+  })
+});

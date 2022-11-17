@@ -7,6 +7,23 @@ class NoteSet {
     this.set = inputted_notes;
   }
 
+  static checkIfTransposition(input_set1: NoteSet, input_set2: NoteSet){
+    let transposition_array = new NoteSet([])
+    for (let i = 0; i < input_set1.set.length; i++){
+      transposition_array.set.push(input_set1.set[i] - input_set2.set[i])
+    }
+
+    transposition_array = NoteSet.normalizeSet(new NoteSet(transposition_array.set));
+
+    for(var i = 0; i < transposition_array.set.length - 1; i++) {
+        if(transposition_array.set[i] !== transposition_array.set[i+1]) {
+            return false;
+        }
+    }
+    return true;
+
+  }
+
   static transposeSet(input_set: NoteSet, distance: number){
     input_set.set = input_set.set.map(note => note += distance);
     return NoteSet.normalizeSet(input_set);
@@ -16,7 +33,13 @@ class NoteSet {
     return new NoteSet(input_set.set.map(num => HelperFunctions.normalizePitchClass(num)));
   }
 
+  static invertSet(input_set: NoteSet, transposition_amount: number=0){
+    input_set.set = input_set.set.map(num => 12 - num);
+    return NoteSet.transposeSet(input_set, transposition_amount);
+  }
+
   static getNormalForm(input_set: NoteSet): NoteSet {
+    input_set.set = input_set.set.sort(function(a, b) {return a-b});
     //remove all duplicates
     input_set.set = input_set.set.filter((note, index) => input_set.set.indexOf(note) === index);
     //make sure that the noteSet array is increasing by adding 12 if necessary
@@ -34,11 +57,14 @@ class NoteSet {
       orderings.push(input_set.set);
     }
 
+    console.log(orderings);
+
     //lengths array holds each the distance of each permutation
     let lengths = [];
     for (let i = 0; i<orderings.length; i++){
       lengths.push(orderings[i][orderings[i].length - 1] - orderings[i][0])
     }
+    console.log(lengths)
     //if there are duplicates in the array, move on to step 2 for closer inspection
     let duplicates = (new Set(lengths)).size !== lengths.length;
     if (duplicates){

@@ -20,4 +20,8 @@ let bosh = new PitchClassInterval(7, 8);
 // console.log(NoteSet.normalizeSet(new NoteSet([11, 12, 13])))
 
 // console.log(HelperFunctions.createIntervalClassVector(new NoteSet([3, 3, 3])))
-console.log(NoteSet.transposeSet(new NoteSet ([23, 25, 27]), 13))
+// console.log(NoteSet.transposeSet(new NoteSet ([23, 25, 27]), 13))
+// console.log(NoteSet.checkIfTransposition(new NoteSet([10, 11, 1, 2]), new NoteSet([7, 8, 10, 11])))
+// console.log(NoteSet.checkIfTransposition(new NoteSet([10, 11, 1, 2]), new NoteSet([7, 8, 10, 10])))
+// console.log(NoteSet.invertSet(new NoteSet([1, 3, 4, 7]), 5));
+console.log(NoteSet.getNormalForm(new NoteSet([4, 2, 1, 10])))
