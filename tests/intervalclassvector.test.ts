@@ -13,7 +13,7 @@ describe('testing createIntervalClassVector', () => {
   });
 
   test('list of same note should reduce to one note, and then get rejected', () => {
-    expect(HelperFunctions.createIntervalClassVector([3, 3, 3])).toBe("not a valid note list");
+    expect(HelperFunctions.createIntervalClassVector([3, 3, 3])).toStrictEqual(new Error("not a valid note list"));
   });
 
   test('list with duplicates should reduce to one note, and then return correct vector', () => {

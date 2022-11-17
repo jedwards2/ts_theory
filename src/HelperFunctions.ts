@@ -102,66 +102,75 @@ function createIntervalClassVector(noteList: number[]): IntervalClassVector | Er
 }
 
 function getNormalForm(noteSet: number[]){
+  //make sure that the noteSet array is increasing by adding 12 if necessary
   for (let i = 0; i < noteSet.length - 1; i++){
     if (noteSet[i] > noteSet[i + 1]){
       noteSet[i + 1] += 12;
     }
   }
-
-  let scales = [noteSet];
+  //orderings array holds each possible permutation of the order
+  let orderings = [noteSet];
   for (let i = 0; i<noteSet.length - 1; i++){
     let firstElement = noteSet[0];
     noteSet = noteSet.slice(1);
     noteSet.push(firstElement + 12);
-    scales.push(noteSet);
+    orderings.push(noteSet);
   }
+  //lengths array holds each the distance of each permutation
   let lengths = [];
-  for (let i = 0; i<scales.length; i++){
-    lengths.push(scales[i][scales[i].length - 1] - scales[i][0])
+  for (let i = 0; i<orderings.length; i++){
+    lengths.push(orderings[i][orderings[i].length - 1] - orderings[i][0])
   }
-
+  //if there are duplicates in the array, move on to step 2 for closer inspection
   let duplicates = (new Set(lengths)).size !== lengths.length;
   if (duplicates){
-    let all_arrays = [];
+    //gather all the arrays with the lowest length into one array
+    let arraysWithSameLength = [];
     let min = Math.min(...lengths);
     lengths.forEach((val, idx) => {
       if (val === min){
-        all_arrays.push(scales[idx]);
+        arraysWithSameLength.push(orderings[idx]);
       }
     })
-
-    for (let i = all_arrays[0].length - 2; i > 0; i--){
-      let orderings = [];
-      for (let q = 0; q < all_arrays.length; q++){
-        orderings.push(all_arrays[q][i] - all_arrays[q][0]);
+    //starting from the second to last item, compare each to the first item, looping over the array backwards
+    for (let i = arraysWithSameLength[0].length - 2; i > 0; i--){
+      //comparison array holds the distances between these items
+      let comparisonArray = [];
+      for (let q = 0; q < arraysWithSameLength.length; q++){
+        comparisonArray.push(arraysWithSameLength[q][i] - arraysWithSameLength[q][0]);
       }
-      let duplicates = (new Set(orderings)).size !== orderings.length;
+      //if there are no duplicates in the comparison array, return the array with the lower distance
+      let duplicates = (new Set(comparisonArray)).size !== comparisonArray.length;
       if (!duplicates){
-        let min = Math.min(...orderings);
-        let index = orderings.indexOf(min);
-        return normalizeSet(all_arrays[index]);
+        let min = Math.min(...comparisonArray);
+        let index = comparisonArray.indexOf(min);
+        return normalizeSet(arraysWithSameLength[index]);
       }
     }
-    all_arrays = all_arrays.map(array => normalizeSet(array))
+
+    //normalize each array before final step
+    arraysWithSameLength = arraysWithSameLength.map(array => normalizeSet(array))
 
     //finally, iterate over each array until one of the notes is lower
-    for (let i = 0; i < all_arrays.length; i++){
+    for (let i = 0; i < arraysWithSameLength.length; i++){
       let pitch_classes = [];
-      for (let q = 0; q < all_arrays[i].length; q++){
-        pitch_classes.push(all_arrays[i][q]);
+      //push note into pitch_classes array, one at a time for comparison
+      for (let q = 0; q < arraysWithSameLength[i].length; q++){
+        pitch_classes.push(arraysWithSameLength[i][q]);
       }
+      //if the two notes are different, find and return the lower array
       let duplicates = (new Set(pitch_classes)).size !== pitch_classes.length;
       if (!duplicates){
         let min = Math.min(...pitch_classes);
         let index = pitch_classes.indexOf(min);
-        return normalizeSet(all_arrays[index]);
+        return normalizeSet(arraysWithSameLength[index]);
       }
     }
-
+    //if there are no duplicates, return the normalized ordering with the lowest length
   } else {
     let min = Math.min(...lengths);
     let index = lengths.indexOf(min);
-    return normalizeSet(scales[index]);
+    return normalizeSet(orderings[index]);
   }
 }
 
