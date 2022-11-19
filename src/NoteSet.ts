@@ -7,21 +7,28 @@ class NoteSet {
     this.set = inputted_notes;
   }
 
+  normalizeSet(){
+    this.set = this.set.map(num => HelperFunctions.normalizePitchClass(num));
+  }
+
+  cloneSet(){
+    return new NoteSet(this.set);
+  }
+
   static normalizeSet(input_set: NoteSet): NoteSet{
-    let new_set = new NoteSet(input_set.set);
+    let new_set = input_set.cloneSet();
     return new NoteSet(new_set.set.map(num => HelperFunctions.normalizePitchClass(num)));
   }
 
   static getPrimeForm(input_set: NoteSet){
-    let set_1 = new NoteSet(input_set.set)
+    let set_1 = input_set.cloneSet();
     set_1 = NoteSet.getNormalForm(set_1);
     set_1 = NoteSet.getSetTransposedTo0(set_1);
 
-    let invertedSet = new NoteSet(input_set.set);
+    let invertedSet = input_set.cloneSet();
     invertedSet = NoteSet.invertSet(invertedSet);
     invertedSet = NoteSet.getNormalForm(invertedSet);
     invertedSet = NoteSet.getSetTransposedTo0(invertedSet);
-
 
     //starting from the second to last item, compare each to the first item, looping over the array backwards
     for (let i = set_1.set.length - 2; i > 0; i--){
@@ -61,27 +68,27 @@ class NoteSet {
   }
 
   static getTransposedSet(input_set: NoteSet, distance: number){
-    let new_set = new NoteSet(input_set.set);
+    let new_set = input_set.cloneSet();
     new_set.set = new_set.set.map(note => note += distance);
     return NoteSet.normalizeSet(new_set);
   }
 
   static getSetTransposedTo0(input_set: NoteSet){
     let amount = input_set.set[0];
-    let new_set = new NoteSet(input_set.set);
+    let new_set = input_set.cloneSet();
     new_set.set = new_set.set.map(num => num - amount);
     return new_set;
   }
 
   static invertSet(input_set: NoteSet, transposition_amount: number=0){
-    let new_set = new NoteSet(input_set.set);
-    new_set = this.normalizeSet(new_set);
+    let new_set = input_set.cloneSet();
+    new_set.normalizeSet();
     new_set.set = new_set.set.map(num => 12 - num);
     return NoteSet.getTransposedSet(new_set, transposition_amount);
   }
 
   static getNormalForm(input_set: NoteSet): NoteSet {
-    let new_set = new NoteSet(input_set.set);
+    let new_set = input_set.cloneSet();
     new_set.set = new_set.set.sort(function(a, b) {return a-b});
     //remove all duplicates
     new_set.set = new_set.set.filter((note, index) => new_set.set.indexOf(note) === index);
@@ -164,8 +171,9 @@ class NoteSet {
   }
 
   static generateSetClass(input_set: NoteSet){
-    let new_set = new NoteSet(input_set.set);
-    new_set = this.normalizeSet(new_set);
+    let new_set = input_set.cloneSet();
+    new_set.normalizeSet();
+
     let setClass = [];
     let inverted = NoteSet.invertSet(new NoteSet(new_set.set));
     for (let i =0 ; i<12; i++){
@@ -180,6 +188,20 @@ class NoteSet {
       }
     }
     return noDuplicates;
+  }
+
+  static generateComplementRelation(input_set: NoteSet){
+    let new_set = input_set.cloneSet();
+    new_set.normalizeSet();
+    let missing_notes = [];
+
+    for (let i = 0; i < 12; i++){
+      if (!new_set.set.includes(i)){
+        missing_notes.push(i)
+      }
+    };
+
+    return new NoteSet(missing_notes);
   }
 
 }
