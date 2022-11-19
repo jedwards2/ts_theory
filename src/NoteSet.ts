@@ -7,15 +7,20 @@ class NoteSet {
     this.set = inputted_notes;
   }
 
+  static normalizeSet(input_set: NoteSet): NoteSet{
+    let new_set = new NoteSet(input_set.set);
+    return new NoteSet(new_set.set.map(num => HelperFunctions.normalizePitchClass(num)));
+  }
+
   static getPrimeForm(input_set: NoteSet){
     let set_1 = new NoteSet(input_set.set)
     set_1 = NoteSet.getNormalForm(set_1);
-    set_1 = NoteSet.transposeSetTo0(set_1);
+    set_1 = NoteSet.getSetTransposedTo0(set_1);
 
     let invertedSet = new NoteSet(input_set.set);
     invertedSet = NoteSet.invertSet(invertedSet);
     invertedSet = NoteSet.getNormalForm(invertedSet);
-    invertedSet = NoteSet.transposeSetTo0(invertedSet);
+    invertedSet = NoteSet.getSetTransposedTo0(invertedSet);
 
 
     //starting from the second to last item, compare each to the first item, looping over the array backwards
@@ -39,7 +44,7 @@ class NoteSet {
     }
   }
 
-  static checkIfTransposition(input_set1: NoteSet, input_set2: NoteSet){
+  static checkIfRelatedByTransposition(input_set1: NoteSet, input_set2: NoteSet){
     let transposition_array = new NoteSet([])
     for (let i = 0; i < input_set1.set.length; i++){
       transposition_array.set.push(input_set1.set[i] - input_set2.set[i])
@@ -53,46 +58,46 @@ class NoteSet {
         }
     }
     return true;
-
   }
 
-  static transposeSet(input_set: NoteSet, distance: number){
-    input_set.set = input_set.set.map(note => note += distance);
-    return NoteSet.normalizeSet(input_set);
+  static getTransposedSet(input_set: NoteSet, distance: number){
+    let new_set = new NoteSet(input_set.set);
+    new_set.set = new_set.set.map(note => note += distance);
+    return NoteSet.normalizeSet(new_set);
   }
 
-  static transposeSetTo0(input_set: NoteSet){
+  static getSetTransposedTo0(input_set: NoteSet){
     let amount = input_set.set[0];
-    input_set.set = input_set.set.map(num => num - amount);
-    return input_set;
-  }
-
-  static normalizeSet(input_set: NoteSet): NoteSet{
-    return new NoteSet(input_set.set.map(num => HelperFunctions.normalizePitchClass(num)));
+    let new_set = new NoteSet(input_set.set);
+    new_set.set = new_set.set.map(num => num - amount);
+    return new_set;
   }
 
   static invertSet(input_set: NoteSet, transposition_amount: number=0){
-    input_set.set = input_set.set.map(num => 12 - num);
-    return NoteSet.transposeSet(input_set, transposition_amount);
+    let new_set = new NoteSet(input_set.set);
+    new_set = this.normalizeSet(new_set);
+    new_set.set = new_set.set.map(num => 12 - num);
+    return NoteSet.getTransposedSet(new_set, transposition_amount);
   }
 
   static getNormalForm(input_set: NoteSet): NoteSet {
-    input_set.set = input_set.set.sort(function(a, b) {return a-b});
+    let new_set = new NoteSet(input_set.set);
+    new_set.set = new_set.set.sort(function(a, b) {return a-b});
     //remove all duplicates
-    input_set.set = input_set.set.filter((note, index) => input_set.set.indexOf(note) === index);
+    new_set.set = new_set.set.filter((note, index) => new_set.set.indexOf(note) === index);
     //make sure that the noteSet array is increasing by adding 12 if necessary
-    for (let i = 0; i < input_set.set.length - 1; i++){
-      if (input_set.set[i] > input_set.set[i + 1]){
-        input_set.set[i + 1] += 12;
+    for (let i = 0; i < new_set.set.length - 1; i++){
+      if (new_set.set[i] > new_set.set[i + 1]){
+        new_set.set[i + 1] += 12;
       }
     }
     //orderings array holds each possible permutation of the order
-    let orderings = [input_set.set];
-    for (let i = 0; i<input_set.set.length - 1; i++){
-      let firstElement = input_set.set[0];
-      input_set.set = input_set.set.slice(1);
-      input_set.set.push(firstElement + 12);
-      orderings.push(input_set.set);
+    let orderings = [new_set.set];
+    for (let i = 0; i<new_set.set.length - 1; i++){
+      let firstElement = new_set.set[0];
+      new_set.set = new_set.set.slice(1);
+      new_set.set.push(firstElement + 12);
+      orderings.push(new_set.set);
     }
 
     //lengths array holds each the distance of each permutation
@@ -159,11 +164,13 @@ class NoteSet {
   }
 
   static generateSetClass(input_set: NoteSet){
+    let new_set = new NoteSet(input_set.set);
+    new_set = this.normalizeSet(new_set);
     let setClass = [];
-    let inverted = NoteSet.invertSet(new NoteSet(input_set.set));
+    let inverted = NoteSet.invertSet(new NoteSet(new_set.set));
     for (let i =0 ; i<12; i++){
-      setClass.push(NoteSet.getNormalForm(NoteSet.transposeSet(new NoteSet(input_set.set), i)));
-      setClass.push(NoteSet.getNormalForm(NoteSet.transposeSet(new NoteSet(inverted.set), i)));
+      setClass.push(NoteSet.getNormalForm(NoteSet.getTransposedSet(new NoteSet(new_set.set), i)));
+      setClass.push(NoteSet.getNormalForm(NoteSet.getTransposedSet(new NoteSet(inverted.set), i)));
     }
     //filter out duplicates
     let noDuplicates = [];
