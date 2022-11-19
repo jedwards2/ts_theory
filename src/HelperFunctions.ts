@@ -89,10 +89,32 @@ function createIntervalClassVector(noteList: NoteSet): IntervalClassVector | Err
   return vector;
 }
 
+function setsEqual(a: NoteSet, b: NoteSet) {
+  if (a === b) return true;
+  if (a == null || b == null) return false;
+  if (a.set.length !== b.set.length) return false;
+
+  for (let i = 0; i < a.set.length; ++i) {
+    if (a.set[i] !== b.set[i]) return false;
+  }
+  return true;
+}
+
+function setIsNotIncluded(array: NoteSet[], b: NoteSet){
+  for (let i = 0; i < array.length; i++) {
+    if (setsEqual(array[i], b)){
+      return false;
+    }
+  }
+  return true;
+}
+
 
 export default {
   normalizePitchClass,
   convertNameToPitchClass,
   convertToClassVectorSpecs,
   createIntervalClassVector,
+  setsEqual,
+  setIsNotIncluded,
 }

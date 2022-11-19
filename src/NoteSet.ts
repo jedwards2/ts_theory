@@ -157,6 +157,24 @@ class NoteSet {
       return NoteSet.normalizeSet(new NoteSet(orderings[index]));
     }
   }
+
+  static generateSetClass(input_set: NoteSet){
+    let setClass = [];
+    let inverted = NoteSet.invertSet(new NoteSet(input_set.set));
+    for (let i =0 ; i<12; i++){
+      setClass.push(NoteSet.getNormalForm(NoteSet.transposeSet(new NoteSet(input_set.set), i)));
+      setClass.push(NoteSet.getNormalForm(NoteSet.transposeSet(new NoteSet(inverted.set), i)));
+    }
+    //filter out duplicates
+    let noDuplicates = [];
+    for (let i = 0; i<setClass.length; i++){
+      if (HelperFunctions.setIsNotIncluded(noDuplicates, setClass[i])){
+        noDuplicates.push(setClass[i]);
+      }
+    }
+    return noDuplicates;
+  }
+
 }
 
 export default NoteSet;
