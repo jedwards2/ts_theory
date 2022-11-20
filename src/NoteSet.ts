@@ -52,19 +52,61 @@ class NoteSet {
   }
 
   static checkIfRelatedByTransposition(input_set1: NoteSet, input_set2: NoteSet){
-    let transposition_array = new NoteSet([])
+    if (input_set1.set.length !== input_set2.set.length){
+      return false;
+    }
+
+    let transposition_array = new NoteSet([]);
     for (let i = 0; i < input_set1.set.length; i++){
       transposition_array.set.push(input_set1.set[i] - input_set2.set[i])
     }
 
     transposition_array = NoteSet.normalizeSet(new NoteSet(transposition_array.set));
 
-    for(var i = 0; i < transposition_array.set.length - 1; i++) {
+    for(let i = 0; i < transposition_array.set.length - 1; i++) {
         if(transposition_array.set[i] !== transposition_array.set[i+1]) {
             return false;
         }
     }
     return true;
+  }
+
+  static checkIfRelatedByInversion(input_set1: NoteSet, input_set2: NoteSet){
+    if (input_set1.set.length !== input_set2.set.length){
+      return false;
+    }
+
+    let inversion_array = new NoteSet([]);
+    for (let i = 0; i < input_set1.set.length; i++){
+      inversion_array.set.push(input_set1.set[i] + input_set2.set[(input_set2.set.length - 1) - i])
+    }
+
+    inversion_array = NoteSet.normalizeSet(new NoteSet(inversion_array.set));
+
+    for(let i = 0; i < inversion_array.set.length - 1; i++) {
+        if(inversion_array.set[i] !== inversion_array.set[i+1]) {
+            return false;
+        }
+    }
+    return true;
+  }
+
+  static checkIfZRelated(input_set1: NoteSet, input_set2: NoteSet){
+    let i1 = HelperFunctions.createIntervalClassVector(input_set1);
+    let i2 = HelperFunctions.createIntervalClassVector(input_set2);
+    console.log(i1);
+    console.log(i2);
+    for (let i = 1; i<7; i++){
+      if (i1[i] !== i2[i]){
+        return false;
+      }
+    }
+
+    if (this.checkIfRelatedByInversion(input_set1, input_set2) && this.checkIfRelatedByTransposition(input_set1, input_set2)){
+      return false;
+    } else {
+      return true;
+    }
   }
 
   static getTransposedSet(input_set: NoteSet, distance: number){

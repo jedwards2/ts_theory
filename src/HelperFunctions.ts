@@ -52,7 +52,7 @@ function convertToClassVectorSpecs(note: Note): Note {
   } else if (note === 8){
     return 4;
   } else if (note === 7){
-    return 3;
+    return 5;
   } else {
     return note;
   }
