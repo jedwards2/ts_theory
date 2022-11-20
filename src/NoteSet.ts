@@ -57,6 +57,8 @@ class NoteSet {
     }
 
     let transposition_array = new NoteSet([]);
+
+    //loop over arrays, subtracting each element from the same element in the other array
     for (let i = 0; i < input_set1.set.length; i++){
       transposition_array.set.push(input_set1.set[i] - input_set2.set[i])
     }
@@ -71,16 +73,18 @@ class NoteSet {
     return true;
   }
 
-  static checkIfRelatedByInversion(input_set1: NoteSet, input_set2: NoteSet){
+  static checkIfRelatedByInversion(input_set1: NoteSet, input_set2: NoteSet): boolean {
     if (input_set1.set.length !== input_set2.set.length){
       return false;
     }
 
     let inversion_array = new NoteSet([]);
+    //loop over the two arrays in opposite directions, adding together the elements
     for (let i = 0; i < input_set1.set.length; i++){
       inversion_array.set.push(input_set1.set[i] + input_set2.set[(input_set2.set.length - 1) - i])
     }
 
+    //normalize the set, and loop making sure that each element in the array is equal
     inversion_array = NoteSet.normalizeSet(new NoteSet(inversion_array.set));
 
     for(let i = 0; i < inversion_array.set.length - 1; i++) {
@@ -91,25 +95,25 @@ class NoteSet {
     return true;
   }
 
-  static checkIfZRelated(input_set1: NoteSet, input_set2: NoteSet){
+  static checkIfZRelated(input_set1: NoteSet, input_set2: NoteSet): boolean {
+    //get both inverval class vectors and compare that they're the same
     let i1 = HelperFunctions.createIntervalClassVector(input_set1);
     let i2 = HelperFunctions.createIntervalClassVector(input_set2);
-    console.log(i1);
-    console.log(i2);
     for (let i = 1; i<7; i++){
       if (i1[i] !== i2[i]){
         return false;
       }
     }
 
-    if (this.checkIfRelatedByInversion(input_set1, input_set2) && this.checkIfRelatedByTransposition(input_set1, input_set2)){
+    //check that they're not related by inversion or transposition
+    if (this.checkIfRelatedByInversion(input_set1, input_set2) || this.checkIfRelatedByTransposition(input_set1, input_set2)){
       return false;
     } else {
       return true;
     }
   }
 
-  static getTransposedSet(input_set: NoteSet, distance: number){
+  static getTransposedSet(input_set: NoteSet, distance: number): NoteSet{
     let new_set = input_set.cloneSet();
     new_set.set = new_set.set.map(note => note += distance);
     return NoteSet.normalizeSet(new_set);
@@ -122,7 +126,7 @@ class NoteSet {
     return new_set;
   }
 
-  static invertSet(input_set: NoteSet, transposition_amount: number=0){
+  static invertSet(input_set: NoteSet, transposition_amount: number=0): NoteSet{
     let new_set = input_set.cloneSet();
     new_set.normalizeSet();
     new_set.set = new_set.set.map(num => 12 - num);
@@ -152,7 +156,7 @@ class NoteSet {
     //lengths array holds each the distance of each permutation
     let lengths = [];
     for (let i = 0; i<orderings.length; i++){
-      lengths.push(orderings[i][orderings[i].length - 1] - orderings[i][0])
+      lengths.push(orderings[i][orderings[i].length - 1] - orderings[i][0]);
     }
 
     //if there are duplicates in the array, move on to step 2 for closer inspection
@@ -212,12 +216,13 @@ class NoteSet {
     }
   }
 
-  static generateSetClass(input_set: NoteSet){
+  static generateSetClass(input_set: NoteSet): NoteSet[]{
     let new_set = input_set.cloneSet();
     new_set.normalizeSet();
 
     let setClass = [];
     let inverted = NoteSet.invertSet(new NoteSet(new_set.set));
+
     for (let i =0 ; i<12; i++){
       setClass.push(NoteSet.getNormalForm(NoteSet.getTransposedSet(new NoteSet(new_set.set), i)));
       setClass.push(NoteSet.getNormalForm(NoteSet.getTransposedSet(new NoteSet(inverted.set), i)));
@@ -232,7 +237,7 @@ class NoteSet {
     return noDuplicates;
   }
 
-  static generateComplementRelation(input_set: NoteSet){
+  static generateComplementRelation(input_set: NoteSet) : NoteSet {
     let new_set = input_set.cloneSet();
     new_set.normalizeSet();
     let missing_notes = [];

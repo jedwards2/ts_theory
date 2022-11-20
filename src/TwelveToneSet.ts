@@ -51,12 +51,15 @@ class TwelveToneSet extends NoteSet {
   getMatrix(){
     let p0 = this.getP0();
     let i0 = this.getI0();
+
     let matrix = []
     matrix.push(p0.set);
+
     for (let i = 1; i<i0.set.length; i++){
       let row = this.getPrime(i0.set[i]);
       matrix.push(row.set)
     }
+
     return matrix;
   }
 
