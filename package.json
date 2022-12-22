@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
+    "test": "jest",
     "index": "npm run build && node js-out/src/index.js"
   },
   "repository": {
