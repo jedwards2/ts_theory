@@ -243,7 +243,7 @@ class NoteSet {
     //filter out duplicates
     let noDuplicates = [];
     for (let i = 0; i<setClass.length; i++){
-      if (HelperFunctions.setIsNotIncluded(noDuplicates, setClass[i])){
+      if (HelperFunctions.checkIfSetIsNotIncluded(noDuplicates, setClass[i])){
         noDuplicates.push(setClass[i]);
       }
     }

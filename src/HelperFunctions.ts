@@ -89,7 +89,7 @@ function createIntervalClassVector(noteList: NoteSet): IntervalClassVector | Err
   return vector;
 }
 
-function setsEqual(a: NoteSet, b: NoteSet): boolean {
+function checkIfSetsEqual(a: NoteSet, b: NoteSet): boolean {
   if (a === b) return true;
   if (a == null || b == null) return false;
   if (a.set.length !== b.set.length) return false;
@@ -100,9 +100,9 @@ function setsEqual(a: NoteSet, b: NoteSet): boolean {
   return true;
 }
 
-function setIsNotIncluded(array: NoteSet[], b: NoteSet): boolean{
+function checkIfSetIsNotIncluded(array: NoteSet[], b: NoteSet): boolean{
   for (let i = 0; i < array.length; i++) {
-    if (setsEqual(array[i], b)){
+    if (checkIfSetsEqual(array[i], b)){
       return false;
     }
   }
@@ -115,6 +115,6 @@ export default {
   convertNameToPitchClass,
   convertToClassVectorSpecs,
   createIntervalClassVector,
-  setsEqual,
-  setIsNotIncluded,
+  checkIfSetsEqual,
+  checkIfSetIsNotIncluded,
 }
