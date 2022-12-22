@@ -10,12 +10,16 @@ class TwelveToneSet extends NoteSet {
 
   getP0(){
     let amount = this.set[0];
-    return NoteSet.normalizeSet(new NoteSet(this.set.map(note => note -= amount)));
+    let new_set = new NoteSet(this.set.map(note => note -= amount))
+    new_set.normalizeSet();
+    return new_set;
   }
 
   getPrime(pitchClass: number){
     let p0 = this.getP0();
-    return NoteSet.normalizeSet(new NoteSet(p0.set.map(note => note += pitchClass)));
+    let new_set = new NoteSet(p0.set.map(note => note += pitchClass));
+    new_set.normalizeSet();
+    return new_set;
   }
 
   getR0(){
@@ -23,20 +27,22 @@ class TwelveToneSet extends NoteSet {
     return new NoteSet(p0.set.reverse());
   }
 
-  getRetrograde(pitchClass: number){
+ getRetrograde(pitchClass: number){
     let retro = this.getPrime(pitchClass);
-    return NoteSet.normalizeSet(new NoteSet(retro.set.reverse()));
+    let new_set = new NoteSet(retro.set.reverse());
+    new_set.normalizeSet();
+    return new_set;
   }
 
   getI0(){
     let p0 = this.getP0();
-    return NoteSet.invertSet(p0);
+    return p0.invertSet();
   }
 
   getInversion(pitchClass: number){
     //first invert pitchClass, then get prime
     let primeSet = this.getPrime(12 - pitchClass);
-    return NoteSet.invertSet(primeSet);
+    return primeSet.invertSet();
   }
 
   getRI0(){
