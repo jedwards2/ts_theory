@@ -1,9 +1,10 @@
 import NoteSet from "./NoteSet";
+import { array12 } from "./types";
 
 class TwelveToneSet extends NoteSet {
   set: number[];
 
-  constructor(input_series: number[]){
+  constructor(input_series: array12){
     super(input_series)
   }
 

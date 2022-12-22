@@ -15,6 +15,10 @@ class NoteSet {
     return new NoteSet(this.set);
   }
 
+  convertToArray(){
+    return [...this.set];
+  }
+
   static normalizeSet(input_set: NoteSet): NoteSet{
     let new_set = input_set.cloneSet();
     return new NoteSet(new_set.set.map(num => HelperFunctions.normalizePitchClass(num)));
