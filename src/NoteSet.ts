@@ -1,4 +1,6 @@
 import HelperFunctions from "./HelperFunctions";
+import { IntervalClassVector } from "./types";
+import PitchClassInterval from "./PitchClassInterval";
 
 class NoteSet {
   set: number[];
@@ -50,6 +52,15 @@ class NoteSet {
     }
   }
 
+  static checkIfSetIsNotIncluded(array: NoteSet[], b: NoteSet): boolean{
+  for (let i = 0; i < array.length; i++) {
+    if (NoteSet.checkIfSetsEqual(array[i], b)){
+      return false;
+    }
+  }
+  return true;
+}
+
   static checkIfRelatedByTransposition(input_set1: NoteSet, input_set2: NoteSet){
     if (input_set1.set.length !== input_set2.set.length){
       return false;
@@ -72,6 +83,48 @@ class NoteSet {
     }
     return true;
   }
+
+  static checkIfSetsEqual(a: NoteSet, b: NoteSet): boolean {
+    if (a === b) return true;
+    if (a == null || b == null) return false;
+    if (a.set.length !== b.set.length) return false;
+
+    for (let i = 0; i < a.set.length; ++i) {
+      if (a.set[i] !== b.set[i]) return false;
+    }
+    return true;
+  }
+
+  static createIntervalClassVector(noteList: NoteSet): IntervalClassVector | Error {
+  //octave equivalence, no duplicate notes are allowed
+  noteList.set = noteList.set.filter((note, index) => noteList.set.indexOf(note) === index);
+
+  let vector: IntervalClassVector = {
+    1: 0,
+    2: 0,
+    3: 0,
+    4: 0,
+    5: 0,
+    6: 0,
+  };
+
+  //interval vectors require more than 1 note to be created
+  if (noteList.set.length < 2){
+    return new Error("not a valid note list")
+  }
+  //loop over every combination of the arrays
+  for (let i = 0; i<noteList.set.length - 1; i++){
+    for (let q = i+1; q < noteList.set.length; q++){
+      //create a new PitchClassInterval obj
+      let interval = new PitchClassInterval(noteList.set[i], noteList.set[q]);
+      // converts to 0-6 if larger and then adds one to that class on the vector
+      let intervalClass = HelperFunctions.convertToClassVectorSpecs(interval.getOrderedPitchClassInterval());
+      vector[intervalClass] += 1;
+    }
+  }
+
+  return vector;
+}
 
   static checkIfRelatedByInversion(input_set1: NoteSet, input_set2: NoteSet): boolean {
     if (input_set1.set.length !== input_set2.set.length){
@@ -98,8 +151,8 @@ class NoteSet {
 
   static checkIfZRelated(input_set1: NoteSet, input_set2: NoteSet): boolean {
     //get both inverval class vectors and compare that they're the same
-    let i1 = HelperFunctions.createIntervalClassVector(input_set1);
-    let i2 = HelperFunctions.createIntervalClassVector(input_set2);
+    let i1 = NoteSet.createIntervalClassVector(input_set1);
+    let i2 = NoteSet.createIntervalClassVector(input_set2);
     for (let i = 1; i<7; i++){
       if (i1[i] !== i2[i]){
         return false;
@@ -243,7 +296,7 @@ class NoteSet {
     //filter out duplicates
     let noDuplicates = [];
     for (let i = 0; i<setClass.length; i++){
-      if (HelperFunctions.checkIfSetIsNotIncluded(noDuplicates, setClass[i])){
+      if (NoteSet.checkIfSetIsNotIncluded(noDuplicates, setClass[i])){
         noDuplicates.push(setClass[i]);
       }
     }

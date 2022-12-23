@@ -58,63 +58,10 @@ function convertToClassVectorSpecs(note: Note): Note {
   }
 }
 
-function createIntervalClassVector(noteList: NoteSet): IntervalClassVector | Error {
-  //octave equivalence, no duplicate notes are allowed
-  noteList.set = noteList.set.filter((note, index) => noteList.set.indexOf(note) === index);
-
-  let vector: IntervalClassVector = {
-    1: 0,
-    2: 0,
-    3: 0,
-    4: 0,
-    5: 0,
-    6: 0,
-  };
-
-  //interval vectors require more than 1 note to be created
-  if (noteList.set.length < 2){
-    return new Error("not a valid note list")
-  }
-  //loop over every combination of the arrays
-  for (let i = 0; i<noteList.set.length - 1; i++){
-    for (let q = i+1; q < noteList.set.length; q++){
-      //create a new PitchClassInterval obj
-      let interval = new PitchClassInterval(noteList.set[i], noteList.set[q]);
-      // converts to 0-6 if larger and then adds one to that class on the vector
-      let intervalClass = convertToClassVectorSpecs(interval.getOrderedPitchClassInterval());
-      vector[intervalClass] += 1;
-    }
-  }
-
-  return vector;
-}
-
-function checkIfSetsEqual(a: NoteSet, b: NoteSet): boolean {
-  if (a === b) return true;
-  if (a == null || b == null) return false;
-  if (a.set.length !== b.set.length) return false;
-
-  for (let i = 0; i < a.set.length; ++i) {
-    if (a.set[i] !== b.set[i]) return false;
-  }
-  return true;
-}
-
-function checkIfSetIsNotIncluded(array: NoteSet[], b: NoteSet): boolean{
-  for (let i = 0; i < array.length; i++) {
-    if (checkIfSetsEqual(array[i], b)){
-      return false;
-    }
-  }
-  return true;
-}
 
 
 export default {
   normalizePitchClass,
   convertNameToPitchClass,
   convertToClassVectorSpecs,
-  createIntervalClassVector,
-  checkIfSetsEqual,
-  checkIfSetIsNotIncluded,
 }
