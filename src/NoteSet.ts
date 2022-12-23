@@ -3,40 +3,40 @@ import { IntervalClassVector } from "./types";
 import PitchClassInterval from "./PitchClassInterval";
 
 class NoteSet {
-  set: number[];
+  _set: number[];
 
   constructor(inputted_notes: number[]){
-    this.set = inputted_notes;
+    this._set = inputted_notes;
   }
 
   normalizeSet(){
-    this.set = this.set.map(num => HelperFunctions.normalizePitchClass(num));
+    this._set = this._set.map(num => HelperFunctions.normalizePitchClass(num));
   }
 
   cloneSet(){
-    return new NoteSet(this.set);
+    return new NoteSet(this._set);
   }
 
   convertToArray(){
-    return [...this.set];
+    return [...this._set];
   }
 
   getPrimeForm(){
-    let set_1 = new NoteSet(this.set);
+    let set_1 = new NoteSet(this._set);
     set_1 = set_1.getNormalForm();
     set_1 = (set_1).getSetTransposedTo0();
 
-    let invertedSet = new NoteSet(this.set);
+    let invertedSet = new NoteSet(this._set);
     invertedSet = (invertedSet).invertSet();
     invertedSet = (invertedSet).getNormalForm();
     invertedSet = (invertedSet).getSetTransposedTo0();
 
     //starting from the second to last item, compare each to the first item, looping over the array backwards
-    for (let i = set_1.set.length - 2; i > 0; i--){
+    for (let i = set_1._set.length - 2; i > 0; i--){
       //comparison array holds the distances between these items
       let comparisonArray = [];
-      comparisonArray.push(this.set[i] - this.set[0]);
-      comparisonArray.push(invertedSet.set[i] - invertedSet.set[0]);
+      comparisonArray.push(this._set[i] - this._set[0]);
+      comparisonArray.push(invertedSet._set[i] - invertedSet._set[0]);
       //if there are no duplicates in the comparison array, return the array with the lower distance
       let duplicates = (new Set(comparisonArray)).size !== comparisonArray.length;
       if (!duplicates){
@@ -62,22 +62,22 @@ class NoteSet {
 }
 
   static checkIfRelatedByTransposition(input_set1: NoteSet, input_set2: NoteSet){
-    if (input_set1.set.length !== input_set2.set.length){
+    if (input_set1._set.length !== input_set2._set.length){
       return false;
     }
 
     let transposition_array = new NoteSet([]);
 
     //loop over arrays, subtracting each element from the same element in the other array
-    for (let i = 0; i < input_set1.set.length; i++){
-      transposition_array.set.push(input_set1.set[i] - input_set2.set[i])
+    for (let i = 0; i < input_set1._set.length; i++){
+      transposition_array._set.push(input_set1._set[i] - input_set2._set[i])
     }
 
-    transposition_array = new NoteSet(transposition_array.set);
+    transposition_array = new NoteSet(transposition_array._set);
     transposition_array.normalizeSet()
 
-    for(let i = 0; i < transposition_array.set.length - 1; i++) {
-        if(transposition_array.set[i] !== transposition_array.set[i+1]) {
+    for(let i = 0; i < transposition_array._set.length - 1; i++) {
+        if(transposition_array._set[i] !== transposition_array._set[i+1]) {
             return false;
         }
     }
@@ -87,17 +87,17 @@ class NoteSet {
   static checkIfSetsEqual(a: NoteSet, b: NoteSet): boolean {
     if (a === b) return true;
     if (a == null || b == null) return false;
-    if (a.set.length !== b.set.length) return false;
+    if (a._set.length !== b._set.length) return false;
 
-    for (let i = 0; i < a.set.length; ++i) {
-      if (a.set[i] !== b.set[i]) return false;
+    for (let i = 0; i < a._set.length; ++i) {
+      if (a._set[i] !== b._set[i]) return false;
     }
     return true;
   }
 
   static createIntervalClassVector(noteList: NoteSet): IntervalClassVector | Error {
   //octave equivalence, no duplicate notes are allowed
-  noteList.set = noteList.set.filter((note, index) => noteList.set.indexOf(note) === index);
+  noteList._set = noteList._set.filter((note, index) => noteList._set.indexOf(note) === index);
 
   let vector: IntervalClassVector = {
     1: 0,
@@ -109,14 +109,14 @@ class NoteSet {
   };
 
   //interval vectors require more than 1 note to be created
-  if (noteList.set.length < 2){
+  if (noteList._set.length < 2){
     return new Error("not a valid note list")
   }
   //loop over every combination of the arrays
-  for (let i = 0; i<noteList.set.length - 1; i++){
-    for (let q = i+1; q < noteList.set.length; q++){
+  for (let i = 0; i<noteList._set.length - 1; i++){
+    for (let q = i+1; q < noteList._set.length; q++){
       //create a new PitchClassInterval obj
-      let interval = new PitchClassInterval(noteList.set[i], noteList.set[q]);
+      let interval = new PitchClassInterval(noteList._set[i], noteList._set[q]);
       // converts to 0-6 if larger and then adds one to that class on the vector
       let intervalClass = HelperFunctions.convertToClassVectorSpecs(interval.getOrderedPitchClassInterval());
       vector[intervalClass] += 1;
@@ -127,22 +127,22 @@ class NoteSet {
 }
 
   static checkIfRelatedByInversion(input_set1: NoteSet, input_set2: NoteSet): boolean {
-    if (input_set1.set.length !== input_set2.set.length){
+    if (input_set1._set.length !== input_set2._set.length){
       return false;
     }
 
     let inversion_array = new NoteSet([]);
     //loop over the two arrays in opposite directions, adding together the elements
-    for (let i = 0; i < input_set1.set.length; i++){
-      inversion_array.set.push(input_set1.set[i] + input_set2.set[(input_set2.set.length - 1) - i])
+    for (let i = 0; i < input_set1._set.length; i++){
+      inversion_array._set.push(input_set1._set[i] + input_set2._set[(input_set2._set.length - 1) - i])
     }
 
-    //normalize the set, and loop making sure that each element in the array is equal
-    inversion_array = new NoteSet(inversion_array.set);
+    //normalize the _set, and loop making sure that each element in the array is equal
+    inversion_array = new NoteSet(inversion_array._set);
     inversion_array.normalizeSet()
 
-    for(let i = 0; i < inversion_array.set.length - 1; i++) {
-        if(inversion_array.set[i] !== inversion_array.set[i+1]) {
+    for(let i = 0; i < inversion_array._set.length - 1; i++) {
+        if(inversion_array._set[i] !== inversion_array._set[i+1]) {
             return false;
         }
     }
@@ -168,44 +168,44 @@ class NoteSet {
   }
 
   getTransposedSet(distance: number): NoteSet{
-    let new_set = new NoteSet(this.set);
-    new_set.set = new_set.set.map(note => note += distance);
+    let new_set = new NoteSet(this._set);
+    new_set._set = new_set._set.map(note => note += distance);
     new_set.normalizeSet();
     return new_set;
   }
 
   getSetTransposedTo0(){
-    let amount = this.set[0];
-    let new_set = new NoteSet(this.set);
-    new_set.set = new_set.set.map(num => num - amount);
+    let amount = this._set[0];
+    let new_set = new NoteSet(this._set);
+    new_set._set = new_set._set.map(num => num - amount);
     return new_set;
   }
 
   invertSet(transposition_amount: number=0): NoteSet{
-    let new_set = new NoteSet(this.set);
+    let new_set = new NoteSet(this._set);
     new_set.normalizeSet();
-    new_set.set = new_set.set.map(num => 12 - num);
+    new_set._set = new_set._set.map(num => 12 - num);
     return new_set.getTransposedSet(transposition_amount);
   }
 
   getNormalForm(): NoteSet {
-    let new_set = new NoteSet(this.set);
-    new_set.set = new_set.set.sort(function(a, b) {return a-b});
+    let new_set = new NoteSet(this._set);
+    new_set._set = new_set._set.sort(function(a, b) {return a-b});
     //remove all duplicates
-    new_set.set = new_set.set.filter((note, index) => new_set.set.indexOf(note) === index);
+    new_set._set = new_set._set.filter((note, index) => new_set._set.indexOf(note) === index);
     //make sure that the noteSet array is increasing by adding 12 if necessary
-    for (let i = 0; i < new_set.set.length - 1; i++){
-      if (new_set.set[i] > new_set.set[i + 1]){
-        new_set.set[i + 1] += 12;
+    for (let i = 0; i < new_set._set.length - 1; i++){
+      if (new_set._set[i] > new_set._set[i + 1]){
+        new_set._set[i + 1] += 12;
       }
     }
     //orderings array holds each possible permutation of the order
-    let orderings = [new_set.set];
-    for (let i = 0; i<new_set.set.length - 1; i++){
-      let firstElement = new_set.set[0];
-      new_set.set = new_set.set.slice(1);
-      new_set.set.push(firstElement + 12);
-      orderings.push(new_set.set);
+    let orderings = [new_set._set];
+    for (let i = 0; i<new_set._set.length - 1; i++){
+      let firstElement = new_set._set[0];
+      new_set._set = new_set._set.slice(1);
+      new_set._set.push(firstElement + 12);
+      orderings.push(new_set._set);
     }
 
     //lengths array holds each the distance of each permutation
@@ -256,8 +256,8 @@ class NoteSet {
         let pitch_classes = [];
 
         //push note into pitch_classes array, one at a time for comparison
-        for (let q = 0; q < arraysWithSameLength[i].set.length; q++){
-          pitch_classes.push(arraysWithSameLength[i].set[q]);
+        for (let q = 0; q < arraysWithSameLength[i]._set.length; q++){
+          pitch_classes.push(arraysWithSameLength[i]._set[q]);
         }
 
         //if the two notes are different, find and return the lower array
@@ -265,7 +265,7 @@ class NoteSet {
         if (!duplicates){
           let min = Math.min(...pitch_classes);
           let index = pitch_classes.indexOf(min);
-          let new_set = new NoteSet(arraysWithSameLength[index].set);
+          let new_set = new NoteSet(arraysWithSameLength[index]._set);
           new_set.normalizeSet()
           return new_set;
         }
@@ -282,16 +282,16 @@ class NoteSet {
   }
 
   generateSetClass(): NoteSet[]{
-    let new_set = new NoteSet(this.set);
+    let new_set = new NoteSet(this._set);
     new_set.normalizeSet();
 
     let setClass = [];
-    let inverted = new NoteSet(new_set.set);
+    let inverted = new NoteSet(new_set._set);
     inverted = inverted.invertSet()
 
     for (let i =0 ; i<12; i++){
-      setClass.push(((new NoteSet(new_set.set)).getTransposedSet(i)).getNormalForm());
-      setClass.push((new NoteSet(inverted.set).getTransposedSet(i)).getNormalForm());
+      setClass.push(((new NoteSet(new_set._set)).getTransposedSet(i)).getNormalForm());
+      setClass.push((new NoteSet(inverted._set).getTransposedSet(i)).getNormalForm());
     }
     //filter out duplicates
     let noDuplicates = [];
@@ -304,12 +304,12 @@ class NoteSet {
   }
 
   generateComplementRelation() : NoteSet {
-    let new_set = new NoteSet(this.set);
+    let new_set = new NoteSet(this._set);
     new_set.normalizeSet();
     let missing_notes = [];
 
     for (let i = 0; i < 12; i++){
-      if (!new_set.set.includes(i)){
+      if (!new_set._set.includes(i)){
         missing_notes.push(i)
       }
     };

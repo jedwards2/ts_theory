@@ -17,19 +17,19 @@ class TwelveToneSet extends NoteSet {
 
   getPrime(pitchClass: number){
     let p0 = this.getP0();
-    let new_set = new NoteSet(p0.set.map(note => note += pitchClass));
+    let new_set = new NoteSet(p0._set.map(note => note += pitchClass));
     new_set.normalizeSet();
     return new_set;
   }
 
   getR0(){
     let p0 = this.getP0();
-    return new NoteSet(p0.set.reverse());
+    return new NoteSet(p0._set.reverse());
   }
 
  getRetrograde(pitchClass: number){
     let retro = this.getPrime(pitchClass);
-    let new_set = new NoteSet(retro.set.reverse());
+    let new_set = new NoteSet(retro._set.reverse());
     new_set.normalizeSet();
     return new_set;
   }
@@ -47,12 +47,12 @@ class TwelveToneSet extends NoteSet {
 
   getRI0(){
     let I0 = this.getI0();
-    return new NoteSet(I0.set.reverse());
+    return new NoteSet(I0._set.reverse());
   }
 
   getRetrogradeInversion(pitchClass: number){
     let inversion = this.getInversion(pitchClass);
-    return new NoteSet(inversion.set.reverse());
+    return new NoteSet(inversion._set.reverse());
   }
 
   getMatrix(){
@@ -60,11 +60,11 @@ class TwelveToneSet extends NoteSet {
     let i0 = this.getI0();
 
     let matrix = []
-    matrix.push(p0.set);
+    matrix.push(p0._set);
 
-    for (let i = 1; i<i0.set.length; i++){
-      let row = this.getPrime(i0.set[i]);
-      matrix.push(row.set)
+    for (let i = 1; i<i0._set.length; i++){
+      let row = this.getPrime(i0._set[i]);
+      matrix.push(row._set)
     }
 
     return matrix;

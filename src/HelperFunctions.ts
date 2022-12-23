@@ -1,7 +1,4 @@
-import PitchClassInterval from "./PitchClassInterval";
-import NoteSet from "./NoteSet";
 import { Note } from "./types";
-import { IntervalClassVector } from "./types";
 
 function normalizePitchClass(note: Note): Note {
   //converts all notes to 0 - 11
