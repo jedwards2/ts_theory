@@ -1,16 +1,16 @@
 import NoteSet from "./NoteSet";
-import { array12 } from "./types";
+import { array12, noteSet12 } from "./types";
 
 class TwelveToneSet extends NoteSet {
-  set: number[];
 
   constructor(input_series: array12){
     super(input_series)
   }
 
+
   getP0(){
-    let amount = this.set[0];
-    let new_set = new NoteSet(this.set.map(note => note -= amount))
+    let amount = this._set[0];
+    let new_set = new NoteSet(this._set.map(note => note -= amount))
     new_set.normalizeSet();
     return new_set;
   }

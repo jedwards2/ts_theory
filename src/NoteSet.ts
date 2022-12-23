@@ -1,11 +1,11 @@
 import HelperFunctions from "./HelperFunctions";
-import { IntervalClassVector } from "./types";
+import { IntervalClassVector, Note } from "./types";
 import PitchClassInterval from "./PitchClassInterval";
 
 class NoteSet {
-  _set: number[];
+  _set: Note[];
 
-  constructor(inputted_notes: number[]){
+  constructor(inputted_notes: Note[]){
     this._set = inputted_notes;
   }
 
