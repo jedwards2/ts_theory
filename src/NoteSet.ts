@@ -22,14 +22,15 @@ class NoteSet {
   }
 
   getPrimeForm(){
+    //set up of normal and inverted sets
     let set_1 = new NoteSet(this._set);
     set_1 = set_1.getNormalForm();
-    set_1 = (set_1).getSetTransposedTo0();
+    set_1 = set_1.getSetTransposedTo0();
 
     let invertedSet = new NoteSet(this._set);
-    invertedSet = (invertedSet).invertSet();
-    invertedSet = (invertedSet).getNormalForm();
-    invertedSet = (invertedSet).getSetTransposedTo0();
+    invertedSet = invertedSet.invertSet();
+    invertedSet = invertedSet.getNormalForm();
+    invertedSet = invertedSet.getSetTransposedTo0();
 
     //starting from the second to last item, compare each to the first item, looping over the array backwards
     for (let i = set_1._set.length - 2; i > 0; i--){
