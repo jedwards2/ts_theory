@@ -1,10 +1,10 @@
-import NoteSet from "./NoteSet";
+import Chord from "./Chord";
 import { Note } from "./types";
 
-class Chord extends NoteSet {
+class Triad extends Chord {
   constructor(inputted_notes: Note[]){
     super(inputted_notes);
-  }
+  };
 }
 
-export default Chord;
+export default Triad;
