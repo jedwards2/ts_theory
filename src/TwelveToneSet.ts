@@ -2,11 +2,9 @@ import NoteSet from "./NoteSet";
 import { array12, noteSet12 } from "./types";
 
 class TwelveToneSet extends NoteSet {
-
   constructor(input_series: array12){
     super(input_series)
   }
-
 
   getP0(){
     let amount = this._set[0];
