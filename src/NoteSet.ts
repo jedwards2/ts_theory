@@ -14,7 +14,7 @@ class NoteSet {
   }
 
   cloneSet(){
-    return new NoteSet(this._set);
+    return new NoteSet([...this._set]);
   }
 
   convertToArray(){
