@@ -6,7 +6,7 @@ class Chord extends NoteSet {
     super(inputted_notes);
   }
 
-  getAllInversions(){
+  getAllInversions() : Chord[]{
     let newNoteSet = this.cloneSet()._set;
     let allInversions = [];
     allInversions.push([...newNoteSet]);
