@@ -12,6 +12,14 @@ class Triad extends Chord {
     this._third = inputted_notes[1];
     this._fifth = inputted_notes[2];
   };
+
+  getFirstInversion(){
+    return [this._third, this._fifth, this._root];
+  }
+
+  getSecondInversion(){
+    return [this._fifth, this._root, this._third]
+  }
 }
 
 export default Triad;
