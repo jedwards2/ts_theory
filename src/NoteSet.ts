@@ -9,6 +9,10 @@ class NoteSet {
     this._set = inputted_notes;
   }
 
+  printSet(){
+    console.log(`Set: ${this._set}`);
+  }
+
   normalizeSet(){
     this._set = this._set.map(num => HelperFunctions.normalizePitchClass(num));
   }
