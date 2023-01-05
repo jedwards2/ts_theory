@@ -25,7 +25,7 @@ class NoteSet {
     return [...this._set];
   }
 
-  getPrimeForm(){
+  getPrimeForm() {
     //set up of normal and inverted sets
     let set_1 = new NoteSet(this._set);
     set_1 = set_1.getNormalForm();
