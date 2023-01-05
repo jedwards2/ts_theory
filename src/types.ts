@@ -9,6 +9,8 @@ export type IntervalClassVector = {
 
 export type Note = number;
 
+export type Array3 = [number, number, number];
+
 export type array12 = [number, number, number, number, number, number, number, number, number, number, number, number];
 
 export type noteSet12 = [Note, Note, Note, Note, Note, Note, Note, Note, Note, Note, Note, Note];
