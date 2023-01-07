@@ -18,6 +18,8 @@ function midiNoteToNoteName(){
   return noteObj;
 }
 
+//just a little git test with alacritty
+
 function getMidiNoteOctave(i: number): number{
   if (i < 24){
     return 0;
